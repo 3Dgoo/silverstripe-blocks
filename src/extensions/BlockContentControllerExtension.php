@@ -16,10 +16,9 @@ class BlocksContentControllerExtension extends Extension
 
     public function onAfterInit()
     {
-        if ($this->owner->data()->canEdit() && $this->owner->getRequest()->getVar('block_preview') == 1) {
-            Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
-            Requirements::javascript(BLOCKS_DIR.'/javascript/block-preview.js');
-            Requirements::css(BLOCKS_DIR.'/css/block-preview.css');
+        if ($this->owner->data()->canEdit() && $this->owner->getRequest()->getVar('block_preview') == 1) {            Requirements::javascript('https://code.jquery.com/jquery-3.7.1.min.js');
+            Requirements::javascript('sheadawson/silverstripe-blocks: javascript/block-preview.js');
+            Requirements::css('sheadawson/silverstripe-blocks: css/block-preview.css');
         }
     }
 
@@ -31,13 +30,14 @@ class BlocksContentControllerExtension extends Extension
      */
     public function handleBlock()
     {
-        if ($id = $this->owner->getRequest()->param('ID')) {
-            $blocks = $this->owner->data()->getBlockList(null, true, true, true);
-            if ($block = $blocks->find('ID', $id)) {
-                return $block->getController();
-            }
+        $block = $this->owner->data()
+            ->getBlockList(null, true, true, true)
+            ->find('ID', $this->owner->getRequest()->param('ID') ?? 0);
+        
+        if (!$block) {
+            return;
         }
 
-        return $block->getController();
+        return $block->getControllerName();
     }
 }
