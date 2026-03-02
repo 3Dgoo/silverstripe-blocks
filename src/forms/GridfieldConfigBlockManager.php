@@ -3,26 +3,24 @@
 namespace SheaDawson\Blocks\Forms;
 
 use SheaDawson\Blocks\BlockManager;
-use SheaDawson\Blocks\Controllers\BlockAdmin;
 use SheaDawson\Blocks\Model\Block;
 use SheaDawson\Blocks\Model\BlockSet;
+use SilverStripe\CMS\Controllers\CMSPageEditController;
 use SilverStripe\Control\Controller;
-use SilverStripe\Forms\DropdownField;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\GridField\GridFieldButtonRow;
 use SilverStripe\Forms\GridField\GridFieldConfig;
 use SilverStripe\Forms\GridField\GridFieldDataColumns;
-use SilverStripe\Forms\GridField\GridFieldButtonRow;
-use SilverStripe\Forms\GridField\GridFieldToolbarHeader;
-use SilverStripe\Forms\GridField\GridFieldSortableHeader;
-use SilverStripe\Forms\GridField\GridFieldFilterHeader;
-use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\Forms\GridField\GridFieldCopyButton;
-use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
-use Symbiote\GridFieldExtensions\GridFieldAddNewMultiClass;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldEditButton;
+use SilverStripe\Forms\GridField\GridFieldFilterHeader;
+use SilverStripe\Forms\GridField\GridFieldSortableHeader;
+use SilverStripe\Forms\GridField\GridFieldToolbarHeader;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
+use Symbiote\GridFieldExtensions\GridFieldAddNewMultiClass;
 use Symbiote\GridFieldExtensions\GridFieldEditableColumns;
-use SilverStripe\CMS\Controllers\CMSPageEditController;
 
 /**
  * GridFieldConfig_BlockManager
@@ -50,7 +48,7 @@ class GridFieldConfigBlockManager extends GridFieldConfig
 
         // EditableColumns only makes sense on Saveable parenst (eg Page), or inline changes won't be saved
         if ($editableRows) {
-            $this->addComponent($editable = new GridFieldEditableColumns());
+            $this->addComponent($editable = GridFieldEditableColumns::create());
             $displayfields = array(
                 'TypeForGridfield' => array('title' => _t('Block.BlockType', 'Block Type'), 'field' => 'SilverStripe\\Forms\\LiteralField'),
                 'Title' => array('title' => _t('Block.Title', 'Title'), 'field' => 'Silverstripe\\Forms\\ReadonlyField'),
@@ -78,7 +76,7 @@ class GridFieldConfigBlockManager extends GridFieldConfig
             }
             $editable->setDisplayFields($displayfields);
         } else {
-            $this->addComponent($dcols = new GridFieldDataColumns());
+            $this->addComponent($dcols = GridFieldDataColumns::create());
 
             $displayfields = array(
                 'TypeForGridfield' => array('title' => _t('Block.BlockType', 'Block Type'), 'field' => 'SilverStripe\\Forms\\LiteralField'),
@@ -92,18 +90,18 @@ class GridFieldConfigBlockManager extends GridFieldConfig
         }
 
 
-        $this->addComponent(new GridFieldButtonRow('before'));
-        $this->addComponent(new GridFieldToolbarHeader());
-        $this->addComponent(new GridFieldDetailForm());
-        $this->addComponent($sort = new GridFieldSortableHeader());
-        $this->addComponent($filter = new GridFieldFilterHeader());
-        $this->addComponent(new GridFieldDetailForm());
+        $this->addComponent(GridFieldButtonRow::create('before'));
+        $this->addComponent(GridFieldToolbarHeader::create());
+        $this->addComponent(GridFieldDetailForm::create());
+        $this->addComponent($sort = GridFieldSortableHeader::create());
+        $this->addComponent($filter = GridFieldFilterHeader::create());
+        $this->addComponent(GridFieldDetailForm::create());
 
         $filter->setThrowExceptionOnBadDataType(false);
         $sort->setThrowExceptionOnBadDataType(false);
 
         if ($canAdd) {
-            $multiClass = new GridFieldAddNewMultiClass();
+            $multiClass = GridFieldAddNewMultiClass::create();
             $classes = $this->blockManager->getBlockClasses();
             $multiClass->setClasses($classes);
             $this->addComponent($multiClass);
@@ -111,11 +109,11 @@ class GridFieldConfigBlockManager extends GridFieldConfig
         }
 
         if ($canEdit) {
-            $this->addComponent(new GridFieldEditButton());
+            $this->addComponent(GridFieldEditButton::create());
         }
 
         if ($canDelete) {
-            $this->addComponent(new GridFieldDeleteAction(true));
+            $this->addComponent(GridFieldDeleteAction::create(true));
         }
 
         return $this;
@@ -130,7 +128,7 @@ class GridFieldConfigBlockManager extends GridFieldConfig
     {
         $classes = $this->blockManager->getBlockClasses();
 
-        $this->addComponent($add = new GridFieldAddExistingSearchButton());
+        $this->addComponent($add = GridFieldAddExistingSearchButton::create());
         $add->setSearchList(Block::get()->filter(array(
             'ClassName' => array_keys($classes),
         )));

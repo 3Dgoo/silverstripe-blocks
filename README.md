@@ -1,14 +1,6 @@
 # SilverStripe Blocks
 
-[![Build Status](https://travis-ci.org/sheadawson/silverstripe-blocks.svg?branch=master)](https://travis-ci.org/sheadawson/silverstripe-blocks)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sheadawson/silverstripe-blocks/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sheadawson/silverstripe-blocks/?branch=master)
-[![codecov](https://codecov.io/gh/sheadawson/silverstripe-blocks/branch/master/graph/badge.svg)](https://codecov.io/gh/sheadawson/silverstripe-blocks)
-
 The Blocks modules aims to provide developers with a flexible foundation for defining reusable blocks of content or widgets that can be managed in the CMS.
-
-## Notice
-
-This module is no longer maintained. If you would like to adopt it and give it a good home please submit your interest and I will be happy to discuss.
 
 ## Features
 
@@ -21,14 +13,9 @@ This module is no longer maintained. If you would like to adopt it and give it a
 * Allow disabling of default/example block type - ContentBlock
 * Allow disabling of specific blocks
 
-
-## Upgrading from 0.x
-
-See [the upgrade guide](docs/upgrading.md)
-
 ## Requirements
 
-* SilverStripe CMS ^4.0
+* SilverStripe CMS ^6.0
 * [GridFieldExtensions](https://github.com/silverstripe-australia/silverstripe-gridfieldextensions)
 * [MultivalueField](https://github.com/nyeholt/silverstripe-multivaluefield)
 * [GridField BetterButtons](https://github.com/unclecheese/silverstripe-gridfield-betterbuttons)

@@ -2,22 +2,22 @@
 
 namespace SheaDawson\Blocks\Extensions;
 
-use SheaDawson\Blocks\Model\Block;
-use SheaDawson\Blocks\Model\Blockset;
 use SheaDawson\Blocks\BlockManager;
 use SheaDawson\Blocks\Forms\GridFieldConfigBlockManager;
-use SilverStripe\CMS\Model\SiteTreeExtension;
-use SilverStripe\Forms\ReadonlyField;
+use SheaDawson\Blocks\Model\Block;
+use SheaDawson\Blocks\Model\Blockset;
+use SilverStripe\Control\Controller;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\ListboxField;
-use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\View\SSViewer;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Forms\ListboxField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\Tab;
+use SilverStripe\Model\List\ArrayList;
 use SilverStripe\Security\Permission;
-use SilverStripe\Control\Controller;
+use SilverStripe\View\SSViewer;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
@@ -25,15 +25,15 @@ use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
  *
  * @author Shea Dawson <shea@silverstripe.com.au>
  */
-class BlocksSiteTreeExtension extends SiteTreeExtension
+class BlocksSiteTreeExtension extends Extension
 {
 	private static $db = [
 		'InheritBlockSets' => 'Boolean',
 	];
 
 	private static $many_many = [
-		"Blocks" => Block::class,
-		"DisabledBlocks" => Block::class,
+		'Blocks' => Block::class,
+		'DisabledBlocks' => Block::class,
 	];
 
 	private static $many_many_extraFields = [
@@ -91,7 +91,7 @@ class BlocksSiteTreeExtension extends SiteTreeExtension
 		$areas = $this->blockManager->getAreasForPageType($this->owner->ClassName);
 
 		if ($areas && count($areas)) {
-			$fields->addFieldToTab('Root', new Tab('Blocks', _t('Block.PLURALNAME', 'Blocks')));
+			$fields->addFieldToTab('Root', Tab::create('Blocks', _t('Block.PLURALNAME', 'Blocks')));
 			if (BlockManager::config()->get('block_area_preview')) {
 				$fields->addFieldToTab('Root.Blocks',
 						LiteralField::create('PreviewLink', $this->areasPreviewButton()));
@@ -100,7 +100,7 @@ class BlocksSiteTreeExtension extends SiteTreeExtension
 			// Blocks related directly to this Page
 			$gridConfig = GridFieldConfigBlockManager::create(true, true, true, true)
 				->addExisting($this->owner->class)
-				->addComponent(new GridFieldOrderableRows('BlockSort'));
+				->addComponent(GridFieldOrderableRows::create('BlockSort'));
 
 
 			$gridSource = $this->owner->Blocks();
@@ -197,15 +197,15 @@ class BlocksSiteTreeExtension extends SiteTreeExtension
 	}
 
 	/**
-	 * Get a merged list of all blocks on this page and ones inherited from BlockSets.
-	 *
-	 * @param string|null $area            filter by block area
-	 * @param bool        $includeDisabled Include blocks that have been explicitly excluded from this page
-	 *                                     i.e. blocks from block sets added to the "disable inherited blocks" list
-	 *
-	 * @return ArrayList
-	 * */
-	public function getBlockList($area = null, $includeDisabled = false)
+     * Get a merged list of all blocks on this page and ones inherited from BlockSets.
+     *
+     * @param string|null $area            filter by block area
+     * @param bool        $includeDisabled Include blocks that have been explicitly excluded from this page
+     *                                     i.e. blocks from block sets added to the "disable inherited blocks" list
+     *
+     * @return ArrayList
+     * */
+    public function getBlockList($area = null, $includeDisabled = false)
 	{
 		$includeSets = $this->blockManager->getUseBlockSets() && $this->owner->InheritBlockSets;
 		$blocks = ArrayList::create();
@@ -243,11 +243,11 @@ class BlocksSiteTreeExtension extends SiteTreeExtension
 	}
 
 	/**
-	 * Get Any BlockSets that apply to this page.
-	 *
-	 * @return ArrayList
-	 * */
-	public function getAppliedSets()
+     * Get Any BlockSets that apply to this page.
+     *
+     * @return ArrayList
+     * */
+    public function getAppliedSets()
 	{
 		$list = ArrayList::create();
 		if (!$this->owner->InheritBlockSets) {
@@ -284,11 +284,11 @@ class BlocksSiteTreeExtension extends SiteTreeExtension
 	}
 
 	/**
-	 * Get all Blocks from BlockSets that apply to this page.
-	 *
-	 * @return ArrayList
-	 * */
-	public function getBlocksFromAppliedBlockSets($area = null, $includeDisabled = false)
+     * Get all Blocks from BlockSets that apply to this page.
+     *
+     * @return ArrayList
+     * */
+    public function getBlocksFromAppliedBlockSets($area = null, $includeDisabled = false)
 	{
 		$blocks = ArrayList::create();
 		$sets = $this->getAppliedSets();

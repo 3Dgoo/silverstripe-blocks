@@ -3,7 +3,7 @@
 namespace SheaDawson\Blocks\Extensions;
 
 use SheaDawson\Blocks\Model\Block;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
 
 /**
@@ -11,10 +11,10 @@ use SilverStripe\Forms\FieldList;
  *
  * @author Shea Dawson <shea@silverstripe.com.au>
  */
-class BlockSiteConfigExtension extends DataExtension
+class BlockSiteConfigExtension extends Extension
 {
 	private static $many_many = [
-		"Blocks" => Block::class,
+		'Blocks' => Block::class,
 	];
 
 	/**

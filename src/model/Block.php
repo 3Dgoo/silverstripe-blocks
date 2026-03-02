@@ -4,27 +4,27 @@ namespace SheaDawson\Blocks\Model;
 
 use SheaDawson\Blocks\BlockManager;
 use SheaDawson\Blocks\Controllers\BlockController;
+use SilverStripe\CMS\Controllers\CMSPageEditController;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Controller;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\ListboxField;
+use SilverStripe\Forms\OptionsetField;
+use SilverStripe\Forms\Tab;
+use SilverStripe\ORM\DB;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\Security\Security;
-use SilverStripe\Versioned\Versioned;
 use SilverStripe\ORM\FieldType\DBBoolean;
 use SilverStripe\ORM\FieldType\DBHTMLText;
-use SilverStripe\ORM\DB;
-use SilverStripe\Core\ClassInfo;
-use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\View\Requirements;
-use SilverStripe\View\SSViewer;
-use SilverStripe\Control\Controller;
-use SilverStripe\Security\PermissionProvider;
-use SilverStripe\Security\Permission;
 use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\OptionsetField;
-use SilverStripe\Forms\ListboxField;
-use SilverStripe\Forms\Tab;
-use SilverStripe\CMS\Controllers\CMSPageEditController;
-use SilverStripe\Core\Config\Config;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\PermissionProvider;
+use SilverStripe\Security\Security;
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\View\Requirements;
+use SilverStripe\View\SSViewer;
 
 /**
  * Block
@@ -50,15 +50,15 @@ class Block extends DataObject implements PermissionProvider
      * @var array
      */
     private static $many_many = [
-        "ViewerGroups" => Group::class,
+        'ViewerGroups' => Group::class,
     ];
 
     /**
      * @var array
      */
     private static $belongs_many_many = [
-        "Pages" => SiteTree::class,
-        "BlockSets" => BlockSet::class,
+        'Pages' => SiteTree::class,
+        'BlockSets' => BlockSet::class,
     ];
 
     private static $summary_fields = [
@@ -94,8 +94,8 @@ class Block extends DataObject implements PermissionProvider
         $context = parent::getDefaultSearchContext();
 
         $results = $this->blockManager->getBlockClasses();
-        if (sizeof($results) > 1) {
-            $classfield = new DropdownField('ClassName', _t('Block.BlockType', 'Block Type'));
+        if (count($results) > 1) {
+            $classfield = DropdownField::create('ClassName', _t('Block.BlockType', 'Block Type'));
             $classfield->setSource($results);
             $classfield->setEmptyString(_t('Block.Any', '(any)'));
             $context->addField($classfield);
@@ -137,7 +137,7 @@ class Block extends DataObject implements PermissionProvider
     public function getCMSFields()
     {
         $self = $this;
-        $this->beforeUpdateCMSFields(function($fields) use($self) {
+        $this->beforeUpdateCMSFields(function($fields) use($self): void {
             /** @var FieldList $fields */
             Requirements::add_i18n_javascript('sheadawson/silverstripe-blocks: javascript/lang');
 
@@ -190,7 +190,7 @@ class Block extends DataObject implements PermissionProvider
             $fields->removeFieldFromTab('Root', 'ViewerGroups');
             $groupsMap = Group::get()->map('ID', 'Breadcrumbs')->toArray();
             asort($groupsMap);
-            $viewersOptionsField = new OptionsetField(
+            $viewersOptionsField = OptionsetField::create(
                 'CanViewType',
                 _t('SiteTree.ACCESSHEADER', 'Who can view this page?')
             );
@@ -206,7 +206,7 @@ class Block extends DataObject implements PermissionProvider
             $viewersOptionsSource['OnlyTheseUsers'] = _t('SiteTree.ACCESSONLYTHESE', 'Only these people (choose from list)');
             $viewersOptionsField->setSource($viewersOptionsSource)->setValue('Anyone');
 
-            $fields->addFieldToTab('Root', new Tab('ViewerGroups', _t('Block.ViewerGroups', 'Viewer Groups')));
+            $fields->addFieldToTab('Root', Tab::create('ViewerGroups', _t('Block.ViewerGroups', 'Viewer Groups')));
             $fields->addFieldsToTab('Root.ViewerGroups', [
                 $viewersOptionsField,
                 $viewerGroupsField,

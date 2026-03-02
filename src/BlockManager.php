@@ -2,22 +2,22 @@
 
 namespace SheaDawson\Blocks;
 
-use SilverStripe\ORM\ArrayLib;
-use SilverStripe\SiteConfig\SiteConfig;
-use SilverStripe\Core\Config\Config;
-use SilverStripe\Core\ClassInfo;
-use SilverStripe\Forms\FormField;
-use SilverStripe\View\SSViewer;
-use SilverStripe\View\ViewableData;
-use SheaDawson\Blocks\Model\ContentBlock;
 use SheaDawson\Blocks\Model\Block;
+use SheaDawson\Blocks\Model\ContentBlock;
+use SilverStripe\Core\ArrayLib;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Forms\FormField;
+use SilverStripe\Model\ModelData;
+use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\View\SSViewer;
 
 /**
  * BlockManager.
  *
  * @author Shea Dawson <shea@livesource.co.nz>
  */
-class BlockManager extends ViewableData
+class BlockManager extends ModelData
 {
 
 	private static $themes = array();
@@ -191,7 +191,7 @@ class BlockManager extends ViewableData
 			$disabledArr = array_merge($disabledArr, $config['disabled_blocks']);
 		}
 		if (count($disabledArr)) {
-			foreach ($disabledArr as $k => $v) {
+			foreach ($disabledArr as $v) {
 				unset($classes[$v]);
 			}
 		}

@@ -24,7 +24,6 @@ class BlockController extends Controller
     {
         if ($block) {
             $this->block = $block;
-            $this->failover = $block;
         }
 
         parent::__construct();
