@@ -9,7 +9,6 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FormField;
 use SilverStripe\Model\ModelData;
-use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\SSViewer;
 
 /**
@@ -160,15 +159,16 @@ class BlockManager extends ModelData
 	 */
 	private function getTheme()
 	{
-		$currentTheme = Config::inst()->get(SSViewer::class, 'theme');
+		$config = $this->config()->get('themes');
+		$activeThemes = SSViewer::get_themes();
 
-		// check directly on SiteConfig incase ContentController hasn't set
-		// the theme yet in ContentController->init()
-		if (!$currentTheme && class_exists(SiteConfig::class)) {
-			$currentTheme = SiteConfig::current_site_config()->Theme;
+		foreach ($activeThemes as $theme) {
+			if ($theme && isset($config[$theme])) {
+				return $theme;
+			}
 		}
 
-		return $currentTheme ? $currentTheme : 'default';
+		return 'default';
 	}
 
 	public function getBlockClasses()

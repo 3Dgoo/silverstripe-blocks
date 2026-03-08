@@ -97,9 +97,6 @@ class GridFieldConfigBlockManager extends GridFieldConfig
         $this->addComponent($filter = GridFieldFilterHeader::create());
         $this->addComponent(GridFieldDetailForm::create());
 
-        $filter->setThrowExceptionOnBadDataType(false);
-        $sort->setThrowExceptionOnBadDataType(false);
-
         if ($canAdd) {
             $multiClass = GridFieldAddNewMultiClass::create();
             $classes = $this->blockManager->getBlockClasses();

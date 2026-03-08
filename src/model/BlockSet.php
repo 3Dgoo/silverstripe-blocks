@@ -6,6 +6,7 @@ use SilverStripe\CMS\Model\RedirectorPage;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\CMS\Model\VirtualPage;
 use SilverStripe\Core\ArrayLib;
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\ErrorPage\ErrorPage;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\GridField\GridField;
@@ -112,10 +113,14 @@ class BlockSet extends DataObject implements PermissionProvider
     protected function pageTypeOptions()
     {
         $pageTypes = [];
-        $classes = ArrayLib::valueKey(SiteTree::page_type_classes());
+        $classes = ClassInfo::subclassesFor(SiteTree::class, false);
+        $classes = array_filter($classes, function ($class) {
+            return !(new \ReflectionClass($class))->isAbstract();
+        });
         unset($classes[VirtualPage::class]);
         unset($classes[ErrorPage::class]);
         unset($classes[RedirectorPage::class]);
+        $classes = ArrayLib::valueKey($classes);
         foreach ($classes as $pageTypeClass) {
             $pageTypes[$pageTypeClass] = singleton($pageTypeClass)->i18n_singular_name();
         }

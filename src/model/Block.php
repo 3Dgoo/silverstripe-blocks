@@ -24,7 +24,9 @@ use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\Security;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Requirements;
-use SilverStripe\View\SSViewer;
+use SilverStripe\View\TemplateEngine;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Model\ModelData;
 
 /**
  * Block
@@ -240,12 +242,12 @@ class Block extends DataObject implements PermissionProvider
      *
      * @return string
      **/
-    public function forTemplate()
+    public function forTemplate(): string
     {
         if ($this->BlockArea) {
-            $template = [$this->class.'_'.$this->BlockArea];
+            $template = [static::class.'_'.$this->BlockArea];
 
-            if (SSViewer::hasTemplate($template)) {
+            if (Injector::inst()->create(TemplateEngine::class)->hasTemplate($template)) {
                 return $this->renderWith($template);
             }
         }
@@ -458,7 +460,7 @@ class Block extends DataObject implements PermissionProvider
      *
      * @return string $classes
      */
-    public function CSSClasses($stopAtClass = 'DataObject')
+    public function CSSClasses(string $stopAtClass = ModelData::class): string
     {
         $classes = strtolower(parent::CSSClasses($stopAtClass));
 

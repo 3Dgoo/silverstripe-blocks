@@ -17,7 +17,8 @@ use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Model\List\ArrayList;
 use SilverStripe\Security\Permission;
-use SilverStripe\View\SSViewer;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\View\TemplateEngine;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
@@ -99,7 +100,7 @@ class BlocksSiteTreeExtension extends Extension
 
 			// Blocks related directly to this Page
 			$gridConfig = GridFieldConfigBlockManager::create(true, true, true, true)
-				->addExisting($this->owner->class)
+				->addExisting()
 				->addComponent(GridFieldOrderableRows::create('BlockSort'));
 
 
@@ -172,7 +173,7 @@ class BlocksSiteTreeExtension extends Extension
 
 		$template = ['BlockArea_'.$area];
 
-		if (SSViewer::hasTemplate($template)) {
+		if (Injector::inst()->create(TemplateEngine::class)->hasTemplate($template)) {
 			return $data->renderWith($template);
 		} else {
 			return $data->renderWith('Includes\\BlockArea');

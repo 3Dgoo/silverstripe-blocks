@@ -4,6 +4,7 @@ namespace SheaDawson\Blocks\Controllers;
 
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
+use SilverStripe\Model\ModelData;
 
 /**
  * Block_Controller.
@@ -74,7 +75,7 @@ class BlockController extends Controller
      *
      * @return string $classes
      */
-    public function CSSClasses($stopAtClass = 'DataObject')
+    public function CSSClasses(string $stopAtClass = ModelData::class): string
     {
         return $this->getBlock()->CSSClasses($stopAtClass);
     }
