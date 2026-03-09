@@ -109,6 +109,11 @@ class Block extends DataObject implements PermissionProvider
     /**
      * @var array
      */
+    private static $casting = [
+        'forTemplate' => 'HTMLText',
+        'BlockHTML' => 'HTMLText',
+    ];
+
     private static $default_sort = ['Title' => 'ASC'];
 
     /**
@@ -252,11 +257,11 @@ class Block extends DataObject implements PermissionProvider
             }
         }
 
-        return $this->renderWith($this->ClassName, $this->getControllerName());
+        return $this->renderWith($this->ClassName);
     }
 
     /**
-     * @return string
+     * @return DBHTMLText
      */
     public function BlockHTML()
     {
