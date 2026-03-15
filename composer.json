@@ -27,7 +27,6 @@
         "installer-name": "blocks",
         "expose": [
             "css",
-            "images",
             "javascript"
         ]
     },
