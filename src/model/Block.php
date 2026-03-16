@@ -160,8 +160,8 @@ class Block extends DataObject implements PermissionProvider
 
             // BlockArea - display areas field if on page edit controller
             if (Controller::curr()->class == CMSPageEditController::class) {
-                $currentPage = Controller::curr()->currentPage();
-                $areas = $self->blockManager->getAreasForPageType($currentPage->ClassName);
+                $currentRecord = Controller::curr()->currentRecord();
+                $areas = $self->blockManager->getAreasForPageType($currentRecord->ClassName);
                 $fields->addFieldToTab(
                     'Root.Main',
                     $blockAreaField = DropdownField::create('ManyMany[BlockArea]', _t('Block.BlockArea', 'Block Area'), $areas),
@@ -175,7 +175,7 @@ class Block extends DataObject implements PermissionProvider
                 }
 
                 if (BlockManager::config()->get('block_area_preview')) {
-                    $blockAreaField->setRightTitle($currentPage->areasPreviewButton());
+                    $blockAreaField->setRightTitle($currentRecord->areasPreviewButton());
                 }
             }
 

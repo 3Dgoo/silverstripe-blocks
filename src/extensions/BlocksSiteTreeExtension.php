@@ -85,7 +85,7 @@ class BlocksSiteTreeExtension extends Extension
 	 * */
 	public function updateCMSFields(FieldList $fields)
 	{
-		if ($fields->fieldByName('Root.Blocks') || !$this->showBlocksFields()) {
+		if (!$this->showBlocksFields()) {
 			return;
 		}
 

@@ -40,8 +40,8 @@ class GridFieldConfigBlockManager extends GridFieldConfig
         $controllerClass = get_class(Controller::curr());
         // Get available Areas (for page) or all in case of ModelAdmin
         if ($controllerClass == CMSPageEditController::class) {
-            $currentPage = Controller::curr()->currentPage();
-            $areasFieldSource = $this->blockManager->getAreasForPageType($currentPage->ClassName);
+            $currentRecord = Controller::curr()->currentRecord();
+            $areasFieldSource = $this->blockManager->getAreasForPageType($currentRecord->ClassName);
         } else {
             $areasFieldSource = $this->blockManager->getAreas();
         }
