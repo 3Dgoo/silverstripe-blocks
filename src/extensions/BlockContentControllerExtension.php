@@ -2,8 +2,8 @@
 
 namespace SheaDawson\Blocks\Extensions;
 
-use SilverStripe\View\Requirements;
 use SilverStripe\Core\Extension;
+use SilverStripe\View\Requirements;
 
 class BlocksContentControllerExtension extends Extension
 {
@@ -16,7 +16,11 @@ class BlocksContentControllerExtension extends Extension
 
     public function onAfterInit()
     {
-        if ($this->owner->data()->canEdit() && $this->owner->getRequest()->getVar('block_preview') == 1) {            Requirements::javascript('https://code.jquery.com/jquery-3.7.1.min.js');
+        if (
+            $this->getOwner()->data()->canEdit()
+            && $this->getOwner()->getRequest()->getVar('block_preview') == 1
+        ) {
+            Requirements::javascript('https://code.jquery.com/jquery-3.7.1.min.js');
             Requirements::javascript('sheadawson/silverstripe-blocks: javascript/block-preview.js');
             Requirements::css('sheadawson/silverstripe-blocks: css/block-preview.css');
         }
@@ -30,9 +34,9 @@ class BlocksContentControllerExtension extends Extension
      */
     public function handleBlock()
     {
-        $block = $this->owner->data()
+        $block = $this->getOwner()->data()
             ->getBlockList(null, true, true, true)
-            ->find('ID', $this->owner->getRequest()->param('ID') ?? 0);
+            ->find('ID', $this->getOwner()->getRequest()->param('ID') ?? 0);
         
         if (!$block) {
             return;

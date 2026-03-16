@@ -2,24 +2,25 @@
 
 namespace SheaDawson\Blocks\Model;
 
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\ArrayLib;
+use SilverStripe\CMS\Model\RedirectorPage;
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Security\PermissionProvider;
-use SilverStripe\Security\Permission;
-use SilverStripe\Forms\TreeMultiselectField;
+use SilverStripe\CMS\Model\VirtualPage;
+use SilverStripe\Core\ArrayLib;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\ErrorPage\ErrorPage;
 use SilverStripe\Forms\CheckboxField;
-use SilverStripe\Forms\HeaderField;
-use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\TreeMultiselectField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\PermissionProvider;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 use Symbiote\MultiValueField\Fields\MultiValueCheckboxField;
 use Symbiote\MultiValueField\ORM\FieldType\MultiValueField;
-use SilverStripe\CMS\Model\VirtualPage;
-use SilverStripe\ErrorPage\ErrorPage;
-use SilverStripe\CMS\Model\RedirectorPage;
 
 /**
  * BlockSet.
@@ -31,7 +32,7 @@ class BlockSet extends DataObject implements PermissionProvider
     /**
      * @var array
      **/
-    private static $table_name = "BlockSet";
+    private static $table_name = 'BlockSet';
 
     /**
      * @var array
@@ -46,8 +47,8 @@ class BlockSet extends DataObject implements PermissionProvider
      * @var array
      **/
     private static $many_many = [
-        "Blocks" => Block::class,
-        "PageParents" => SiteTree::class,
+        'Blocks' => Block::class,
+        'PageParents' => SiteTree::class,
     ];
 
     /**
@@ -93,8 +94,8 @@ class BlockSet extends DataObject implements PermissionProvider
         * @todo - change relation editor back to the custom block manager config and fix issues when 'creating' Blocks from a BlockSet.
 		*/
         $gridConfig = GridFieldConfig_RelationEditor::create();
-        $gridConfig->addComponent(new GridFieldOrderableRows('BlockSort'));
-        $gridConfig->addComponent(new GridFieldDeleteAction());
+        $gridConfig->addComponent(GridFieldOrderableRows::create('BlockSort'));
+        $gridConfig->addComponent(GridFieldDeleteAction::create());
 
         $gridSource = $this->Blocks()->Sort('BlockSort');
 
@@ -112,10 +113,14 @@ class BlockSet extends DataObject implements PermissionProvider
     protected function pageTypeOptions()
     {
         $pageTypes = [];
-        $classes = ArrayLib::valueKey(SiteTree::page_type_classes());
+        $classes = ClassInfo::subclassesFor(SiteTree::class, false);
+        $classes = array_filter($classes, function ($class) {
+            return !(new \ReflectionClass($class))->isAbstract();
+        });
         unset($classes[VirtualPage::class]);
         unset($classes[ErrorPage::class]);
         unset($classes[RedirectorPage::class]);
+        $classes = ArrayLib::valueKey($classes);
         foreach ($classes as $pageTypeClass) {
             $pageTypes[$pageTypeClass] = singleton($pageTypeClass)->i18n_singular_name();
         }
@@ -134,12 +139,12 @@ class BlockSet extends DataObject implements PermissionProvider
         $pages = SiteTree::get();
         $types = $this->PageTypes->getValue();
         if (count($types)) {
-            $pages = $pages->filter('ClassName', $types);
+            $pages = $pages->filter(['ClassName' => $types]);
         }
 
         $parents = $this->PageParents()->column('ID');
         if (count($parents)) {
-            $pages = $pages->filter('ParentID', $parents);
+            $pages = $pages->filter(['ParentID' => $parents]);
         }
 
         return $pages;

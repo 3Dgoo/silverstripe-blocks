@@ -2,12 +2,12 @@
 
 namespace SheaDawson\Blocks\Controllers;
 
+use SheaDawson\Blocks\Forms\GridFieldConfigBlockManager;
 use SheaDawson\Blocks\Model\Block;
 use SheaDawson\Blocks\Model\BlockSet;
-use SheaDawson\Blocks\Forms\GridFieldConfigBlockManager;
 use SilverStripe\Admin\ModelAdmin;
-use SilverStripe\Versioned\Versioned;
 use SilverStripe\Forms\GridField\GridFieldDataColumns;
+use SilverStripe\Versioned\Versioned;
 
 /**
  * BlockAdmin.
@@ -21,16 +21,16 @@ class BlockAdmin extends ModelAdmin
         BlockSet::class,
     ];
 
-    private static $url_segment = "block-admin";
+    private static $url_segment = 'block-admin';
 
-    private static $menu_title = "Blocks";
+    private static $menu_title = 'Blocks';
 
-    private static $menu_icon = 'sheadawson/silverstripe-blocks: images/blocks.png';
+    private static $menu_icon_class = 'font-icon-block-layout';
 
     public $showImportForm = false;
 
     private static $dependencies = [
-        "blockManager" => '%$blockManager',
+        'blockManager' => '%$blockManager',
     ];
 
     public $blockManager;
@@ -75,7 +75,7 @@ class BlockAdmin extends ModelAdmin
         $context = parent::getSearchContext();
         $fields = $context->getFields();
         $subclasses = $this->blockManager->getBlockClasses();
-        if ($fields->dataFieldByName('q[ClassName]') && sizeof($subclasses) > 1) {
+        if ($fields->dataFieldByName('q[ClassName]') && count($subclasses) > 1) {
             $fields->dataFieldByName('q[ClassName]')->setSource($subclasses);
             $fields->dataFieldByName('q[ClassName]')->setEmptyString('(any)');
         } else {
